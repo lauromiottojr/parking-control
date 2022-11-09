@@ -1,9 +1,14 @@
 package com.api.parkingcontrol.models;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "TB_PARKING_SPOT")
@@ -12,7 +17,7 @@ public class ParkingSpotModel implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID id;
+	private Integer id;
 
 	@Column(nullable = false, unique = true, length = 10)
 	private String parkingSpotNumber;
@@ -42,11 +47,11 @@ public class ParkingSpotModel implements Serializable {
 	private String block;
 
 	// GET AND SET
-	public UUID getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
