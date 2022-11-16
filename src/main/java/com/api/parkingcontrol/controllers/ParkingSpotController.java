@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,11 +33,15 @@ import com.api.parkingcontrol.services.ParkingSpotService;
 @RequestMapping("/parking-spot")
 public class ParkingSpotController {
 
-	final ParkingSpotService parkingSpotService;
+	@Autowired
+	private ParkingSpotService parkingSpotService;
 
-	public ParkingSpotController(ParkingSpotService parkingSpotService) {
-		this.parkingSpotService = parkingSpotService;
-	}
+	// final ParkingSpotService parkingSpotService;
+
+	/*
+	 * public ParkingSpotController(ParkingSpotService parkingSpotService) {
+	 * this.parkingSpotService = parkingSpotService; }
+	 */
 
 	@PostMapping
 	public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDTO parkingSpotDTO) {
