@@ -62,8 +62,7 @@ public class RoleModel implements UserDetails, Serializable, GrantedAuthority {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.roles;
 	}
 
 	@Override
