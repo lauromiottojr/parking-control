@@ -3,7 +3,6 @@ package com.api.parkingcontrol.models;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +28,7 @@ public class RoleModel implements UserDetails, Serializable, GrantedAuthority {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID id;
+	private Integer id;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, unique = true)
@@ -39,11 +38,11 @@ public class RoleModel implements UserDetails, Serializable, GrantedAuthority {
 	@JoinTable(name = "TB_USERS_ROLES", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<RoleModel> roles;
 
-	public UUID getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
