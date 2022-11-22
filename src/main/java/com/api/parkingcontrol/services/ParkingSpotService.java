@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,15 @@ import com.api.parkingcontrol.repositories.ParkingSpotRepository;
 @Service
 public class ParkingSpotService {
 
-	final ParkingSpotRepository parkingSpotRepository;
+	@Autowired
+	private ParkingSpotRepository parkingSpotRepository;
 
-	public ParkingSpotService(ParkingSpotRepository parkingSpotRepository) {
-		this.parkingSpotRepository = parkingSpotRepository;
-	}
+	/*
+	 * final ParkingSpotRepository parkingSpotRepository;
+	 * 
+	 * public ParkingSpotService(ParkingSpotRepository parkingSpotRepository) {
+	 * this.parkingSpotRepository = parkingSpotRepository; }
+	 */
 
 	@Transactional
 	public ParkingSpotModel save(ParkingSpotModel parkingSpotModel) {
@@ -33,7 +38,7 @@ public class ParkingSpotService {
 		return parkingSpotRepository.existsByParkingSpotNumber(parkingSpotNumber);
 	}
 
-	public boolean existsByApartmentAndBlock(String apartment, String block) {
+	public boolean existsByApartamentAndBlock(String apartment, String block) {
 		return parkingSpotRepository.existsByApartmentAndBlock(apartment, block);
 	}
 
@@ -49,4 +54,5 @@ public class ParkingSpotService {
 	public void delete(ParkingSpotModel parkingSpotModel) {
 		parkingSpotRepository.delete(parkingSpotModel);
 	}
+
 }

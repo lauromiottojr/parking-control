@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,65 +38,65 @@ public class ParkingSpotController {
 		this.parkingSpotService = parkingSpotService;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDTO parkingSpotDto) {
-		if (parkingSpotService.existsByLicensePlateCar(parkingSpotDto.getLicensePlateCar())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: License Plate Car is already in use!");
+	public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDTO parkingSpotDTO) {
+		if (parkingSpotService.existsByLicensePlateCar(parkingSpotDTO.getLicensePlateCar())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: Plata do carro já está em uso!");
 		}
-		if (parkingSpotService.existsByParkingSpotNumber(parkingSpotDto.getParkingSpotNumber())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Parking Spot is already in use!");
+		if (parkingSpotService.existsByParkingSpotNumber(parkingSpotDTO.getParkingSpotNumber())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: Vaga já está em uso!");
 		}
-		if (parkingSpotService.existsByApartmentAndBlock(parkingSpotDto.getApartment(), parkingSpotDto.getBlock())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body("Conflict: Parking Spot already registered for this apartment/block!");
+		if (parkingSpotService.existsByApartamentAndBlock(parkingSpotDTO.getApartment(), parkingSpotDTO.getBlock())) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: Este apartamento já tem uma vaga!");
 		}
-		var parkingSpotModel = new ParkingSpotModel();
-		BeanUtils.copyProperties(parkingSpotDto, parkingSpotModel);
-		parkingSpotModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+
+		ParkingSpotModel parkingSpotModel = new ParkingSpotModel();
+		BeanUtils.copyProperties(parkingSpotDTO, parkingSpotModel);
+		parkingSpotModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
 		return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotService.save(parkingSpotModel));
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping
 	public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpots(
 			@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findAll(pageable));
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value = "id") Integer id) {
-		Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
-		if (!parkingSpotModelOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+		Optional<ParkingSpotModel> parkingSpotModelOpt = parkingSpotService.findById(id);
+		if (!parkingSpotModelOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vaga não encontrada!");
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(parkingSpotModelOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body(parkingSpotModelOpt.get());
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteParkingSpot(@PathVariable(value = "id") Integer id) {
-		Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
-		if (!parkingSpotModelOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+		Optional<ParkingSpotModel> parkingSpotModelOpt = parkingSpotService.findById(id);
+		if (!parkingSpotModelOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vaga não encontrada!");
 		}
-		parkingSpotService.delete(parkingSpotModelOptional.get());
-		return ResponseEntity.status(HttpStatus.OK).body("Parking Spot deleted successfully.");
+		parkingSpotService.delete(parkingSpotModelOpt.get());
+		return ResponseEntity.status(HttpStatus.OK).body("Vaga foi deletada com sucesso!");
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateParkingSpot(@PathVariable(value = "id") Integer id,
-			@RequestBody @Valid ParkingSpotDTO parkingSpotDto) {
-		Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
-		if (!parkingSpotModelOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
+			@RequestBody @Valid ParkingSpotDTO objDTO) {
+		Optional<ParkingSpotModel> parkingSpotModelOpt = parkingSpotService.findById(id);
+		if (!parkingSpotModelOpt.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vaga não encontrada!");
 		}
-		var parkingSpotModel = new ParkingSpotModel();
-		BeanUtils.copyProperties(parkingSpotDto, parkingSpotModel);
-		parkingSpotModel.setId(parkingSpotModelOptional.get().getId());
-		parkingSpotModel.setRegistrationDate(parkingSpotModelOptional.get().getRegistrationDate());
+		var parkingSpotModel = parkingSpotModelOpt.get();
+		parkingSpotModel.setParkingSpotNumber(objDTO.getParkingSpotNumber());
+		parkingSpotModel.setLicensePlateCar(objDTO.getLicensePlateCar());
+		parkingSpotModel.setModelCar(objDTO.getModelCar());
+		parkingSpotModel.setBrandCar(objDTO.getBrandCar());
+		parkingSpotModel.setColorCar(objDTO.getColorCar());
+		parkingSpotModel.setResponsibleName(objDTO.getResponsibleName());
+		parkingSpotModel.setApartment(objDTO.getApartment());
+		parkingSpotModel.setBlock(objDTO.getBlock());
 		return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.save(parkingSpotModel));
 	}
 
