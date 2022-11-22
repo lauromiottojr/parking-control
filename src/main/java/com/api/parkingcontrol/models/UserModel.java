@@ -24,7 +24,7 @@ public class UserModel implements UserDetails, Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer userId;
+	private Integer id;
 	
 	@Column(nullable = false, unique = true)
 	private String username;
@@ -71,12 +71,12 @@ public class UserModel implements UserDetails, Serializable {
 		return true;
 	}
 
-	public Integer getUserId() {
-		return userId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setId(Integer userId) {
+		this.id = userId;
 	}
 
 	public void setUsername(String username) {
