@@ -13,9 +13,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @Configuration
 public class DateConfig {
 
-	public static final String DATE_TIME_FORMAT = "'Data: 'dd-MM-yyyy 'Horário: 'HH:mm";
+	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	public static LocalDateTimeSerializer LOCAL_DATETIME_SERIALIZER = new LocalDateTimeSerializer(
-			DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+			DateTimeFormatter.ofPattern(DATETIME_FORMAT));
 
 	@Bean
 	@Primary

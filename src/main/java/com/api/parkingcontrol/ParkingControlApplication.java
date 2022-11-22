@@ -12,12 +12,11 @@ public class ParkingControlApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ParkingControlApplication.class, args);
-		System.out.println(new BCryptPasswordEncoder().encode("123456"));
+		System.out.println(new BCryptPasswordEncoder().encode("senha123"));
 	}
 
 	@GetMapping("/")
 	public String index() {
-		return "Olá mundo!";
+		return "Olá Mundo!";
 	}
-
 }

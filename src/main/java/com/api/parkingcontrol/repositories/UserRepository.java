@@ -11,5 +11,4 @@ import com.api.parkingcontrol.models.UserModel;
 public interface UserRepository extends JpaRepository<UserModel, Integer> {
 
 	Optional<UserModel> findByUsername(String username);
-
 }
