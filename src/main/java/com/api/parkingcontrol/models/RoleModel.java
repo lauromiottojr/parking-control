@@ -13,6 +13,8 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.api.parkingcontrol.enums.RoleName;
+
 @Entity
 @Table(name = "TB_ROLE")
 public class RoleModel implements Serializable, GrantedAuthority {
